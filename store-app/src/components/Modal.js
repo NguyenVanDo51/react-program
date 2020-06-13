@@ -11,7 +11,7 @@ class Modal extends Component {
    <Context.ProductConsumer>
      {
        (value) => {
-         const { modalOpen, closeOpen } = value;
+         const { modalOpen, closeModal } = value;
          const { img, title, price } = value.modalProduct;
         console.log(value);
 
@@ -33,13 +33,13 @@ class Modal extends Component {
                         value => 
                         <div>
                           <Link to="/" onClick= { () => {
-                            return value.closeModal() ;
+                            return closeModal() ;
                           } }
                           >
                             <ButtonContainer className="my-2">Continue shopping</ButtonContainer>
                           </Link>
                           <Link to="/store">
-                            <ButtonContainer cart onClick={ () => { return value.closeModal(); }}>Go to the cart</ButtonContainer>
+                            <ButtonContainer cart onClick={ () => { return closeModal(); }}>Go to the cart</ButtonContainer>
                           </Link>                 
                         </div>             
 

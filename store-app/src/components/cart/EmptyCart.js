@@ -1,6 +1,4 @@
 import React from 'react';
-import Title from '../Title';
-import Context from '../../context';
 
 /**
 * @author

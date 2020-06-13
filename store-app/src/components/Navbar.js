@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import ButtonContainer from './Button';
 import logo from '../data/logo.svg';
 import styled from 'styled-components';
+import ControlTop from './ControlTop';
+
 
 export default class Navbar extends Component {
     render() {
         return (
-            <NavWrapper className="navbar navbar-expand-sm navbar-dark px-sm-5">
+            <NavWrapper className="navbar navbar-expand-sm navbar-dark px-sm-5" id="top">
                 <Link to="/">
                     <img src={logo} alt="a" className="navbar-brand"/>
                 </Link>
@@ -26,6 +28,7 @@ export default class Navbar extends Component {
                         My cart
                     </ButtonContainer>
                 </Link>
+                <ControlTop target ="top" />
             </NavWrapper>
         );  
     }

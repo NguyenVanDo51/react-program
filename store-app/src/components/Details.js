@@ -19,7 +19,7 @@ class Details extends Component {
                const { products } = value ;
                let product = products.filter( (product) => product.id === parseInt(this.id));
                if(product.length <1 ) return null;
-               let { id, title, img, price, company, info, inCart, count, total } = value.detailProduct;
+               let { id, title, img, price, company, info, inCart } = value.detailProduct;
                return (
                   <DetailContainer className="container my-5 px-3">  
                      {/* product title */}

@@ -7,7 +7,7 @@ class ProductProvider extends Component {
   state = {
     products: [],
     detailProduct: detailProduct,
-    cart: [],
+    cart: storeProducts,
     modalOpen: false,
     modalProduct: detailProduct,
     cartSubTotal: 0,
@@ -28,8 +28,6 @@ class ProductProvider extends Component {
       tempProducts = [...tempProducts, singleItem];
     })
 
-    tempProducts[0].inCart = true;
-
     this.setState( () => {
       return { products: tempProducts }
     })
@@ -40,19 +38,83 @@ class ProductProvider extends Component {
     return product;
   }
 
+  // tang so luong
   increment = (id) => {
-    console.log("this is increment method");
+    let tempProducts = [...this.state.cart];
+    let index = tempProducts.indexOf(this.getItem(id));
+    let subTotal = this.state.cartSubTotal;
+
+    tempProducts[index].count += 1;
+    tempProducts[index].total = tempProducts[index].count * tempProducts[index].price;
+    subTotal += tempProducts[index].price;
+    this.setState(() => {
+      return {cart: tempProducts, cartSubTotal: subTotal, cartTotal: subTotal}
+    });
+
+    ;
   }
 
+  // giam so luong
   decrement = (id) => {
-    console.log("this is decrement method");
+    let tempProduct = [...this.state.cart];
+    let index = tempProduct.indexOf(this.getItem(id));
+
+    if(tempProduct[index].count > 1){
+      tempProduct[index].count -= 1;
+      tempProduct[index].total -= tempProduct[index].price;
+      let subTotal = this.state.cartSubTotal;
+      subTotal -= tempProduct[index].price;
+      this.setState( () => {
+        return {
+          cart: tempProduct,
+          cartSubTotal: subTotal, 
+          cartTotal: subTotal
+        }
+      })
+    }
   }
 
   removeItem = (id) => {
-    console.log("this is removeItem method");
+    let cart = [...this.state.cart];
+    let index = cart.indexOf(this.getItem(id));
+
+
+    // cap nhat lai incart trong cac products
+    let products = [...this.state.products];
+    products[index].inCart = false;
+
+    // cap nhat lai cartTotal
+    let cartSubTotal = this.state.cartSubTotal;
+    let cartTotal = this.state.cartTotal;
+
+    cartSubTotal -= cart[index].count * cart[index].price;
+    cartTotal = cartSubTotal;
+
+    // xoa cai vi tri index khoi cart
+    cart.splice(index, 1);
+
+    this.setState( () => {
+      return {
+        cart: cart,
+        products: products,
+        cartSubTotal: cartSubTotal,
+        cartTotal: cartTotal
+      };
+    })
+    console.log("this is removeItem method", this.state.cart);
   }
 
   clearCart = () => {
+    this.setProducts();
+    this.setState( () => {
+      return {    
+        cart: [],
+        modalOpen: false,
+        modalProduct: detailProduct,
+        cartSubTotal: 0,
+        cartTax: 0,
+        cartTotal: 0}
+    })
     console.log("Clear cart");
   }
 
@@ -64,7 +126,6 @@ class ProductProvider extends Component {
   }
 
   modalClose = () => {
-    console.log("modalClose");
     this.setState( () => {
       return { modalOpen: false } 
     });
@@ -88,12 +149,20 @@ class ProductProvider extends Component {
     const price = product.price;
     product.total = price;
 
+    // them gia tri vao total
+
+    let cartSubTotal = this.state.cartSubTotal;
+    cartSubTotal += product.price; 
     // cap nhat lai state
     this.setState( () => {
-      return {products: tempProducts, cart: [...this.state.cart, product]}; // them product vao cart
-      }, () => {
-      console.log(this.state);
-    });
+      return {
+        products: tempProducts, 
+        cart: [...this.state.cart, product], 
+        cartSubTotal: cartSubTotal,    // them product vao cart
+        cartTotal: cartSubTotal
+      }; 
+      });
+
   }
 
  render() {
