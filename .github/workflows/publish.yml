@@ -42,5 +42,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CF_AI }}
-          command: pages public react-program/build --branch=master
+          command: pages publish react-program/build --project-name=react-program --commit-dirty=true --branch=master
 
