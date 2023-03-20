@@ -1,21 +1,46 @@
-on: [push]
-
+name: react-program
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: Tag
+        default: master
 jobs:
-  publish:
+  setup-build-publish:
+    name: Setup, Build, Public
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      deployments: write
-    name: Publish to Cloudflare Pages
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # Run a build step here if your project requires
-
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+      - uses: actions/checkout@v3
+        name: Checkout
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.inputs.version }}
+          
+      - name: Setup Nodejs
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '16.x'
+      
+      - uses: actions/cache@v3
+        id: npm-cache
+        with: 
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
+      - name: Instal depedencies
+        run: npm install
+        
+      - name: Build
+        run: |
+          npm run build
+    
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CF_AI }}
-          projectName: react-program
+          command: pages public react-program/build --project-name=react-program --commit-dirty=true --branch=master
+
