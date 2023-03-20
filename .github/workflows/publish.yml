@@ -37,6 +37,6 @@ jobs:
       - name: Deploy Cloudflare Pages
         uses: cloudflare/wrangler-action@2.0.0
         with:
-          apiToken: ${{ secrets.STAGING_CLOUDFLARE_TOKEN }}
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CF_AI }}
           command: pages publish build --project-name=react-program --commit-dirty=true --branch=master
