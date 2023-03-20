@@ -19,5 +19,3 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CF_AI }}
           projectName: react-program
-          directory: build
-          
