@@ -10,6 +10,10 @@ jobs:
   setup-build-publish:
     name: Setup, Build, Public
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: react-program
+    
     steps:
       - uses: actions/checkout@v3
         name: Checkout
