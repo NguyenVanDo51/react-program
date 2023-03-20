@@ -1,50 +1,45 @@
-name: react-program
+name: dev_fontend
 on:
   workflow_dispatch:
-    inputs:
+   inputs:
       version:
         required: true
-        description: Tag
+        description: Nhập branch/tags muốn build, default dùng nhánh fe_dev
         default: master
 jobs:
   setup-build-publish:
-    name: Setup, Build, Public
+    name: Setup, Build, Publish
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: react-program
-    
     steps:
       - uses: actions/checkout@v3
         name: Checkout
         with:
           persist-credentials: false
           ref: ${{ github.event.inputs.version }}
-          
-      - name: Setup Nodejs
+      - name: Setup NodeJS
         uses: actions/setup-node@v3
-        with: 
+        with:
           node-version: '16.x'
-      
       - uses: actions/cache@v3
         id: npm-cache
-        with: 
+        with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-            
-      - name: Instal depedencies
-        run: npm install
-        
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
       - name: Build
         run: |
           npm run build
-    
-      - name: Deploy to Cloudflare Pages
+        env:
+          CI: false
+      - name: Deploy Cloudflare Pages
         uses: cloudflare/wrangler-action@2.0.0
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          apiToken: ${{ secrets.STAGING_CLOUDFLARE_TOKEN }}
           accountId: ${{ secrets.CF_AI }}
           command: pages publish react-program/build --project-name=react-program --commit-dirty=true --branch=master
-
